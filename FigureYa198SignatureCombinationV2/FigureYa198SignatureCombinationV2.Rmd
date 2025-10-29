@@ -2,7 +2,7 @@
 title: "FigureYa198SignatureCombinationV2"
 params:
   author: "Xiaofan Lu"
-  reviewers: Ying Ge,Hui Huang
+  reviewers: "Ying Ge, Hui Huang"
 output: html_document
 ---
 
@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## 需求描述
 ## Requirement Description
 
-我想实现下文章figure 1c的计算方法，FigureYa182RFSurv挑出了importance 比较大的基因，后续常规用muticox等方法再缩减基因。这篇文章写的是用1023中组合按KM的 logRank pvalue和基因数目挑选模型，不一样的风格。
+我想实现下文章Figure 1c的计算方法，FigureYa182RFSurv挑出了importance比较大的基因，后续常规用muticox等方法再缩减基因。这篇文章写的是用1023种组合按KM的 logRank pvalue和基因数目挑选模型，不一样的风格。
 
 I would like to crowdsource the calculation method for Figure 1c in the article. FigureYa182RFSurv selected genes with relatively high importance, followed by conventional methods like multicox to further reduce the number of genes. However, this paper describes a different approach—selecting the model from 1,023 combinations based on the log-rank p-value of the Kaplan-Meier (KM) analysis and the number of genes, which is a distinct style.
 
@@ -36,29 +36,29 @@ FIGURE 1 Identification of candidate genes and development of an integrated PCG�
 ## 应用场景
 ## Application scenarios
 
-主要应用于多个基因集或生物标志物的联合效应评估：
-
-- 多重生物标志物验证。当你有多个候选基因签名时，需要评估它们的组合效果是否优于单独使用
-- 药物敏感性预测。结合多个药物相关的基因签名，提高治疗反应预测的准确性
-- 肿瘤亚型分类优化。通过组合不同的分子特征签名，改善癌症亚型的识别精度
-- 预后模型构建。整合多个预后相关的基因集，建立更稳健的生存预测模型
+根据随机生存森林分析筛选变量，通过基因组合后利用log-rank检验取p值显著且基因个数较少的组合，定义为预后签名。
 
 专门用于多基因签名的智能组合优化，核心方法是通过排列组合策略筛选最优基因组合。
 
-根据随机生存森林分析筛选变量，通过基因组合后利用log-rank检验取p值显著且基因个数较少的组合，定义为预后签名。
+缺点是：如果基因数量超过15-20个，计算量会变得不现实。
+
+适合在已经通过其他方法初步筛选后的小规模基因集上使用。
+
+Based on the variables screened by random survival forest analysis, gene combinations are evaluated using the log-rank test, and the combination with a significant p-value and a smaller number of genes is selected as the prognostic signature.
 
 The core idea is permutation and combination.
 
-Based on the variables screened by random survival forest analysis, gene combinations are evaluated using the log-rank test, and the combination with a significant p-value and a smaller number of genes is selected as the prognostic signature.
+The disadvantage is that if the number of genes exceeds 15-20, the amount of calculation becomes unrealistic.
+
+It is suitable for use on small-scale gene sets that have already been preliminarily screened by other methods.
 
 ## 环境设置
 ## Environment settings
 
 ```{r}
-source("install_dependencies.R")
-library(survival)       # 生存分析包，常用于生存数据统计与分析 # Survival analysis package, commonly used for statistical analysis of survival data
+source("install_dependencies.R") # 如果缺少包，请先运行此脚本安装依赖包 # If you lack a package, please run this script to install the dependencies
+library(survival) # 生存分析包，常用于生存数据统计与分析 # Survival analysis package, commonly used for statistical analysis of survival data
 library(randomForestSRC) # 随机生存森林，用于变量筛选及建模 # Random survival forest, used for variable selection and modeling
-
 Sys.setenv(LANGUAGE = "en") #显示英文报错信息 # error messages are displayed in English
 options(stringsAsFactors = FALSE) #禁止chr转成factor # It is forbidden to convert chr into factor
 ```
@@ -115,9 +115,12 @@ expr <- rbind.data.frame(mexp,lexp)
 # Removal of non-expressed genes, log transformation, z-score
 expr <- expr[rowSums(expr) > 0,]
 expr <- as.data.frame(round(t(scale(t(log2(expr + 1)))),3)) 
+```
 
-## 过滤出与OS有关的基因
-## Filter out genes associated with OS
+## cox回归筛选与OS有关的基因
+## Cox regression to screen genes related to OS
+
+```{r}
 cox.pcutoff <- 0.05 # cox的p阈值 # p-threshold for cox
 Coxoutput.OS <- NULL
 for (i in 1:nrow(expr)) {
@@ -153,6 +156,9 @@ write.csv(Coxoutput.OS,"univariate cox regression for gene filtering.csv",row.na
 ## 随机森林进一步降维
 ## Random forests are further dimensionally reduced
 
+```{r}
+# 取出cox显著的基因做随机生存森林
+# Take out the genes that are significant in cox for random survival forest
 gene.sel <- Coxoutput.OS[which(Coxoutput.OS$pvalue < cox.pcutoff),"gene"]
 tmp <- expr[gene.sel,]
 
@@ -165,8 +171,12 @@ surv.rf <- rfsrc(Surv(OS.time, OS) ~ .,
                  ntree = ntree,
                  importance = TRUE,
                  seed = 12345678)
+```
 
-# 排列组合确定最优签名# Permutations and combinations determine the optimal signature
+## 排列组合确定最优签名及log-rank检验
+## Permutations and combinations determine the optimal signature and log-rank test
+
+```{r}
 num.imp <- 10
 rel.imp <- sort(surv.rf$importance, decreasing = T)
 rel.imp.sel <- rel.imp[1:num.imp] # 取出一定数量的基因 # Remove a certain number of genes

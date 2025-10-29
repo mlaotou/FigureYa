@@ -1,6 +1,0 @@
-df<-read.table("easy_input.txt",header = T, row.names = 1,as.is = 1)
-getwd()
-getwd("Downloads/FigureYa/FigureYa198SignatureCombinationV2//")
-getwd("Downloads/FigureYa/FigureYa198SignatureCombinationV2/")
-getwd("Downloads/FigureYa/FigureYa198SignatureCombinationV2")
-setwd("Downloads/FigureYa/FigureYa198SignatureCombinationV2")
