@@ -103,43 +103,46 @@ If needed, you can further use the `web_scraper.py` file to scrape the web page 
 
 # Scratchpad
 
-## Current Task: Add CSV Export to FigureYa30Plus_nomogram_app
+## Current Task: 将FigureYa59Plus_volcano_shiny转换为独立HTML应用
 
-任务目标：在现有的离线nomogram手机应用中添加CSV导出功能，让每次录入的信息都能导出并保存到本地。
+任务目标：将基于R Shiny的火山图应用转换为纯JavaScript/HTML的PWA应用，支持离线使用。
 
 需求分析：
-- 应用已经是PWA，支持离线使用 ✅
-- 应用已经在本地计算，不上传服务器 ✅
-- 需要添加：每次录入信息后导出到CSV文件
+- 原Shiny应用功能：
+  - 上传CSV数据（差异表达基因数据）
+  - 实时调整参数（LogFC cutoff, P-value cutoff）
+  - 两种绘图模式（Classic, Advanced）
+  - 自定义基因高亮显示
+  - 导出PDF图片
+  - 数据预览
+- 需转换为：纯JavaScript应用，不依赖R服务器
+
+技术方案：
+1. 使用Chart.js或Plotly.js绘制火山图
+2. 使用File API读取CSV文件
+3. 实现交互式参数调整
+4. 支持PNG/SVG导出（替代PDF）
+5. PWA支持离线使用
 
 计划步骤：
-[X] 在js/app.js中添加CSV导出功能函数
-[X] 在界面中添加"导出CSV"按钮
-[X] 支持累积保存历史记录
-[X] 创建csv-export.js模块处理CSV导出逻辑
-[X] 更新CSS样式美化导出按钮
-[X] 更新Service Worker支持离线使用
-[X] 更新README文档说明新功能
-[X] 创建详细的使用指南文档
-[X] 创建本地部署指南
-[X] 创建版本更新说明
-[X] 启动本地服务器
-[X] 检查代码无linting错误
-[ ] 在手机上测试应用功能（需用户手动测试）
+[X] 创建项目目录结构
+[X] 创建index.html主页面
+[X] 创建CSS样式文件
+[X] 创建volcano.js（核心绘图逻辑）
+[X] 创建data-handler.js（CSV数据处理）
+[X] 嵌入示例数据
+[X] 创建PWA manifest.json
+[X] 创建Service Worker（sw.js）
+[X] 生成PNG图标
+[X] 创建README文档
+[X] 创建快速使用指南
+[X] 启动本地服务器供用户访问
 
-技术实现：
-1. 使用Blob和URL.createObjectURL生成CSV文件 ✅
-2. 支持浏览器下载CSV到本地 ✅
-3. 包含时间戳和所有输入参数以及预测结果 ✅
-4. 使用localStorage保存历史记录 ✅
-5. 添加BOM支持Excel正确显示中文 ✅
-6. 支持导出当前记录和所有历史记录 ✅
-
-已完成的文件修改：
-- index.html: 添加导出按钮和历史记录显示
-- js/csv-export.js: 新建CSV导出管理模块
-- js/app.js: 集成CSV导出功能和事件绑定
-- css/style.css: 添加导出按钮样式
-- sw.js: 更新缓存列表支持离线使用
-- README.md: 更新功能说明
-- 使用指南.md: 创建详细使用文档
+任务完成总结：
+- 成功将R Shiny火山图应用转换为纯JavaScript/HTML PWA应用
+- 使用Plotly.js实现交互式火山图可视化
+- 支持Classic和Advanced两种绘图模式
+- 完整的PWA支持，可离线使用
+- 响应式设计，适配移动设备
+- 服务器已启动在端口9000
+- 访问地址: http://localhost:9000
