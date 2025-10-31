@@ -370,6 +370,7 @@ data %>% filter(GenePairs=="FOXK2_Foxk2") %>%
 > The effect is quite obvious
 
 ### 组织效应和物种效应都不显著的基因
+### Genes with insignificant tissue and species effects
 
 ```{r}
 subset(lmm.var.dcp, GenePairs=="FOXO3_Foxo3")
