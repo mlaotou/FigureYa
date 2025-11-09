@@ -103,46 +103,11 @@ If needed, you can further use the `web_scraper.py` file to scrape the web page 
 
 # Scratchpad
 
-## Current Task: 将FigureYa59Plus_volcano_shiny转换为独立HTML应用
+## Current Task: 排查未推送的本地修改
 
-任务目标：将基于R Shiny的火山图应用转换为纯JavaScript/HTML的PWA应用，支持离线使用。
-
-需求分析：
-- 原Shiny应用功能：
-  - 上传CSV数据（差异表达基因数据）
-  - 实时调整参数（LogFC cutoff, P-value cutoff）
-  - 两种绘图模式（Classic, Advanced）
-  - 自定义基因高亮显示
-  - 导出PDF图片
-  - 数据预览
-- 需转换为：纯JavaScript应用，不依赖R服务器
-
-技术方案：
-1. 使用Chart.js或Plotly.js绘制火山图
-2. 使用File API读取CSV文件
-3. 实现交互式参数调整
-4. 支持PNG/SVG导出（替代PDF）
-5. PWA支持离线使用
+任务描述：用户认为本地存在尚未推送的文件修改，但 `git status` 显示工作树干净，需要确认实际状态并协助定位差异。
 
 计划步骤：
-[X] 创建项目目录结构
-[X] 创建index.html主页面
-[X] 创建CSS样式文件
-[X] 创建volcano.js（核心绘图逻辑）
-[X] 创建data-handler.js（CSV数据处理）
-[X] 嵌入示例数据
-[X] 创建PWA manifest.json
-[X] 创建Service Worker（sw.js）
-[X] 生成PNG图标
-[X] 创建README文档
-[X] 创建快速使用指南
-[X] 启动本地服务器供用户访问
-
-任务完成总结：
-- 成功将R Shiny火山图应用转换为纯JavaScript/HTML PWA应用
-- 使用Plotly.js实现交互式火山图可视化
-- 支持Classic和Advanced两种绘图模式
-- 完整的PWA支持，可离线使用
-- 响应式设计，适配移动设备
-- 服务器已启动在端口9000
-- 访问地址: http://localhost:9000
+[X] 使用 `git status -sb` 和 `git log --oneline --graph --decorate --all` 复查当前分支状态
+[X] 检查是否存在未跟踪文件或其他分支上的提交
+[ ] 根据结果向用户解释原因并提供后续建议

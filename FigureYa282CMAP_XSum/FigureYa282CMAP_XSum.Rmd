@@ -228,8 +228,7 @@ xsum$number <- 1:nrow(xsum)
 # Highlight top 5 drugs and label their names
 select <- xsum[1:5,]
 
-# 开始画图
-# Plotting
+# 开始画图 Plotting
 ggplot(xsum, aes(number,score))+
   geom_point(size=3, color="grey50") + 
   geom_point(data = select, alpha = 1, 
